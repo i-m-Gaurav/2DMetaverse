@@ -14,7 +14,30 @@ export function AuthProvider({ children }) {
   const signInWithGoogle = () => {
     const provider = new GoogleAuthProvider();
     return signInWithPopup(auth, provider)
-      .then((result) => result.user);
+      .then((result) => {
+        const user = result.user;
+
+        // now we will directly send the data to the backend from here.
+
+        return fetch('http://localhost:3000/api/users/create',{
+          method:'POST',
+          headers : {
+            'Content-Type' : 'application/json',
+          },
+          body : JSON.stringify({
+            uid : user.uid,
+            displayName : user.displayName,
+            email : user.email,
+            photoURL : user.photoURL
+          }),
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log("User stored in the database;", data);
+          return user;
+        })
+      }  
+    );
   };
 
   const logout = () => {

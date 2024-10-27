@@ -1,10 +1,9 @@
-import  { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import Phaser from 'phaser';
 import MetaverseScene from '../game/scenes/MetaverseScene';
-import { useAuth } from '../contexts/AuthContext';
 
-const Game = () => {
-    const { user } = useAuth();
+const MetaverseGame = () => {
+    const gameRef = useRef(null);
 
     useEffect(() => {
         const config = {
@@ -15,14 +14,15 @@ const Game = () => {
             physics: {
                 default: 'arcade',
                 arcade: {
-                    gravity: {x: 0, y: 0 },
+                    gravity: { x: 0, y: 0 },
                     debug: false
                 }
             },
-            scene: MetaverseScene
+            scene: [MetaverseScene]
         };
 
         const game = new Phaser.Game(config);
+        gameRef.current = game;
 
         return () => {
             game.destroy(true);
@@ -31,12 +31,9 @@ const Game = () => {
 
     return (
         <div className="w-full h-screen flex flex-col">
-            <div className="bg-gray-800 text-white p-4">
-                Welcome, {user?.displayName}
-            </div>
             <div id="game-container" className="flex-1" />
         </div>
     );
 };
 
-export default Game;
+export default MetaverseGame;

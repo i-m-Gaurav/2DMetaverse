@@ -1,9 +1,8 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import Login from './components/Login';
-import Game from './components/Game';
+import MetaverseGame from './components/MetaverseGame';
 import PrivateRoute from './components/PrivateRoute';
-import MetaverseComponent from './components/MetaverseComponent';
 
 function App() {
   return (
@@ -15,19 +14,14 @@ function App() {
             path="/game"
             element={
               <PrivateRoute>
-                <Game />
+                <MetaverseGame />
               </PrivateRoute>
             }
           />
-          <Route
-            path="/metaverse"
-            element={
-              <PrivateRoute>
-                <MetaverseComponent />
-              </PrivateRoute>
-            }
-          />
-          <Route path="/" element={<Login />} />
+          {/* Redirect root to /login */}
+          <Route path="/" element={<Navigate to="/login" replace />} />
+          {/* Catch-all route for any undefined paths */}
+          <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </AuthProvider>
     </Router>
